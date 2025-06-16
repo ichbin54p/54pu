@@ -51,7 +51,7 @@ RAM: ?
 ## Opcodes
 
 ```
-<index> <operand>      <info>             <operands>
+<index> <opcode>      <info>             <operands>
 
  00000    NOOP     No operation                0
  00001    LDI      Load immediate              1
