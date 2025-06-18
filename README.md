@@ -59,8 +59,8 @@ RAM: ?
  00011    RLD      Read register               1
  00100    PST      Update port                 1
  00101    PLD      Read port                   1
- 00110    LOD      Update ram                  1
- 00111    STR      Read ram                    1
+ 00110    STR      Update ram                  1
+ 00111    LOD      Read ram                    1
  01000    INC      Increment acc               0
  01001    DEC      Decrement acc               0
  01010    ADD      Add acc with reg            1
@@ -100,6 +100,40 @@ RAM: ?
 
 ```
 
+## Operands
+Instructions are 8 bit, sometimes you need 2 instructions to finish a task for example, with LDI you will first input the opcode as the first instruction `00001` then you will input the 8 bit immediate value in the next instruction `110110`
+
+The result of the load immediate instruction will be `00001000, 110110`
+
+Instructions are normally made with the `opcode` being the first 5 bits and then the `operand` being the last 3 bits. `00010` (RST, see [Opcodes](#opcodes)) + `010` (2)
+
 # Programming
 
-.
+## Assembling
+
+Instructions are in hex (max 15) because of the icache having 4 different latch output possibilities meaning, you can compress 4 instructions in 1 barrel.
+
+Example:
+
+```
+00001000 (Load immediate of 54)
+00110110
+00010000 (Store in register 0)
+00011001 (Read register 1)
+```
+
+Now you read each instruction bit by bit vertically:
+
+```
+0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 (Load immediate of 54)
+0 | 0 | 1 | 1 | 0 | 1 | 1 | 0
+0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 (Store in register 0)
+0 | 0 | 0 | 1 | 1 | 0 | 0 | 1 (Read register 1)
+
+|   |   |   |   |   |   |   |
+v   v   v   v   v   v   v   v
+
+0   0   4   7   9   4   4   1
+```
+
+And your instruction in hex would be `00479441`
